@@ -7,7 +7,7 @@ class TelegramInterface:
         self.logger = logging.getLogger(__name__)
 
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text("Hello! I’m your AI super-agent. Type a command to get started.")
+        await update.message.reply_text("Hello! I'm your AI super-agent. Type a command to get started.")
 
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         help_text = (
@@ -23,9 +23,7 @@ class TelegramInterface:
         prompt = " ".join(context.args) if context.args else "Write a Python script to print Hello World"
         # Dummy response for now; replace with real agent logic
         code = f"print('Hello from your code agent! Prompt was: {prompt}')"
-        await update.message.reply_text(f"Here’s your generated code:
-
-{code}")
+        await update.message.reply_text(f"Here's your generated code:\n\n{code}")
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         message_text = update.message.text.lower()
@@ -34,7 +32,7 @@ class TelegramInterface:
             context.args = [message_text]
             await self.code_command(update, context)
         else:
-            await update.message.reply_text("Sorry, I didn’t understand. Try typing /help for available commands.")
+            await update.message.reply_text("Sorry, I didn't understand. Try typing /help for available commands.")
 
 def run_bot(token: str):
     app = Application.builder().token(token).build()
