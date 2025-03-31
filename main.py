@@ -1,12 +1,11 @@
 from fastapi import FastAPI, Request
 from src.interface.telegram_bot import application
-import os
 
 app = FastAPI()
 
 @app.get("/")
-def read_root():
-    return {"status": "Super Agent is webhook-ready"}
+def root():
+    return {"status": "Superagent101 API is running"}
 
 @app.post("/webhook")
 async def telegram_webhook(request: Request):
