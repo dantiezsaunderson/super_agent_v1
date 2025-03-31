@@ -1,10 +1,11 @@
-import asyncio
-from src.interface.telegram_bot import run_bot
 import os
+import asyncio
+from src.interface.telegram_bot import application
+
+async def run_bot():
+    await application.initialize()
+    await application.start()
+    print("Bot running via polling")
 
 if __name__ == "__main__":
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    if token:
-        asyncio.run(run_bot(token))
-    else:
-        print("TELEGRAM_BOT_TOKEN is missing!")
+    asyncio.run(run_bot())
