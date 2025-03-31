@@ -1,6 +1,10 @@
 import logging
+import os
 from telegram import Update
-from telegram.ext import ContextTypes, Application, CommandHandler, MessageHandler, filters
+from telegram.ext import ContextTypes, Application, ApplicationBuilder, CommandHandler, MessageHandler, filters
+
+# Create application instance at module level for webhook support
+application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
 
 class TelegramInterface:
     def __init__(self):
@@ -34,14 +38,15 @@ class TelegramInterface:
         else:
             await update.message.reply_text("Sorry, I didn't understand. Try typing /help for available commands.")
 
-def run_bot(token: str):
-    app = Application.builder().token(token).build()
-    interface = TelegramInterface()
-
-    app.add_handler(CommandHandler("start", interface.start))
-    app.add_handler(CommandHandler("help", interface.help_command))
-    app.add_handler(CommandHandler("code", interface.code_command))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, interface.handle_message))
-
-    print("Bot is running...")
-    app.run_polling()
+async def run_bot(token: str):
+    await application.initialize()
+    await application.start()
+    print("Bot started and webhook-ready")
+    
+    # Register handlers if not already registered
+    if not application.handlers:
+        interface = TelegramInterface()
+        application.add_handler(CommandHandler("start", interface.start))
+        application.add_handler(CommandHandler("help", interface.help_command))
+        application.add_handler(CommandHandler("code", interface.code_command))
+        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, interface.handle_message))
